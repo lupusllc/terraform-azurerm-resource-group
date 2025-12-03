@@ -1,63 +1,166 @@
----
-subcategory: "Base"
-layout: "azurerm"
-page_title: "Azure Resource Manager: azurerm_resource_group"
-description: |-
-  Manages a Resource Group.
----
+# terraform-azurerm-resource-group
 
-This is pulled from https://github.com/hashicorp/terraform-provider-azurerm/blob/main/website/docs/r/resource_group.html.markdown to be used as a base starting example for a what documentation should look like. It's expected that this be overhauled with org standards when it comes to a final product.
+This is a public repo used as source for public Terraform modules.
 
-# azurerm_resource_group
+## Purpose
 
-Manages a Resource Group.
+These modules were created to expand provider capabilities and implement org standards & defaults. 
 
--> **Note:** Azure automatically deletes any Resources nested within the Resource Group when a Resource Group is deleted.
+This helps shift complexity right (module side), while reducing complexity left (root/user side). So configuration is more easily defined at the vars/tfvars level.
 
--> **Note:** Version 2.72 and later of the Azure Provider include a Feature Toggle which can error if there are any Resources left within the Resource Group at deletion time. This Feature Toggle is disabled in 2.x but enabled by default from 3.0 onwards, and is intended to avoid the unintentional destruction of resources managed outside of Terraform (for example, provisioned by an ARM Template). See [the Features block documentation](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/features-block) for more information on Feature Toggles within Terraform.
+### Enhanced Capabilities
 
-## Example Usage
+* Uses a list of objects to create zero or more resources.
+* Uses a default map for common defaults, when not provided.
+  * Location.
+  * Resource Group.
+  * Tags.
+* Uses a required map for required items, that should be on all applicable resources.
+  * Tags.
+* Handles dependencies checking at the module level.
+* Root/user level terraform is more simplified.
 
-```hcl
-resource "azurerm_resource_group" "example" {
-  name     = "example"
-  location = "West Europe"
-}
-```
+## Provider
+
+This module uses the azurerm provider.
 
 ## Arguments Reference
 
-The following arguments are supported:
+### Arg: Root Level
 
-* `location` - (Required) The Azure Region where the Resource Group should exist. Changing this forces a new Resource Group to be created.
+Arguments | Required | Type | Default | Example | Description
+--------- | -------- | ---- | ------- | ------- | -----------
+defaults | no | map() | {} | [See Example](#Arg:-defaults:-Example) | Default items to use for resources for this and sub-modules if those aren't provided.
+resource_groups | no | list(object()) | [] | [See Example](#Arg:-resource_groups:-Example) | A list of objects, used to create zero or more resource groups.
+required | no | map() | {} | [See Example](#Arg:-required:-Example) | Required items to use for resources for this and sub-modules, as applicable.
 
-* `name` - (Required) The Name which should be used for this Resource Group. Changing this forces a new Resource Group to be created.
+### Arg: defaults
 
----
+The defaults map uses the following for resources created, if those settings aren't provided.
 
-* `managed_by` - (Optional) The ID of the resource or application that manages this Resource Group.
+Arguments | Required | Type | Default | Example | Description
+--------- | -------- | ---- | ------- | ------- | -----------
+location | no | string | | [See Example](#Arg:-defaults:-Example) | Resource location.
+tags | no | map(string) | | [See Example](#Arg:-defaults:-Example) | Resource tags.
 
-* `tags` - (Optional) A mapping of tags which should be assigned to the Resource Group.
+#### Arg: defaults: Example
 
-## Attributes Reference
+```
+{
+  location = "eastus"
+  tags = { default_tag = "default level" }
+}
+```
 
-In addition to the Arguments listed above - the following Attributes are exported:
+### Arg: resource_groups
 
-* `id` - The ID of the Resource Group.
+The resource_groups list of objects defines the resource groups to be created.
 
-## Timeouts
+Arguments | Required | Type | Default | Example | Description
+--------- | -------- | ---- | ------- | ------- | -----------
+location | yes* | string | | [See Example](#Arg:-resource_groups:-Example) | Resource location.
+name | yes | string | | [See Example](#Arg:-resource_groups:-Example) | Resource name.
+tags | no | map(string) | | [See Example](#Arg:-resource_groups:-Example) | Resource tags, these tags will be combined with required tags if provided.
 
-The `timeouts` block allows you to specify [timeouts](https://developer.hashicorp.com/terraform/language/resources/configure#define-operation-timeouts) for certain actions:
+\* These are only required if defaults do not provide these values.
 
-* `create` - (Defaults to 90 minutes) Used when creating the Resource Group.
-* `read` - (Defaults to 5 minutes) Used when retrieving the Resource Group.
-* `update` - (Defaults to 90 minutes) Used when updating the Resource Group.
-* `delete` - (Defaults to 90 minutes) Used when deleting the Resource Group.
+#### Arg: resource_groups: Example
 
-## Import
+```
+[
+  {
+    name = "example-min-wus-rg"
+    location = "westus"
+    tags = { resource_tag = "resource level" }
+  }
+]
+```
 
-Resource Groups can be imported using the `resource id`, e.g.
+### Arg: required
 
-```shell
-terraform import azurerm_resource_group.example /subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/group1
+The required map uses the following for all applicable resources created.
+
+Arguments | Required | Type | Default | Example | Description
+--------- | -------- | ---- | ------- | ------- | -----------
+tags | no | map(string) | | [See Example](#Arg:-required:-Example) | Resource tags.
+
+#### Arg: required: Example
+
+```
+{
+  tags = { required_tag = "required level" }
+}
+```
+
+## Example Usage - Minimal
+
+The example below is a minimal example of to use this module.
+
+Usually you would use variables.tf, main.tf, tfvars, and other files, but this is just basic example.
+
+```
+### Variables
+
+variable "resource_groups" {
+  default     = [{
+      name = "example-min-wus-rg"
+      location = "westus"
+  }]
+}
+
+### Resources/Modules
+
+module "resource-group" {
+  source  = "lupusllc/resource-group/azurerm"
+  version = "0.0.1"
+
+  resource_groups = var.resource_groups
+}
+```
+
+## Example Usage - Fuller
+
+The example below is a fuller example of the use this module.
+
+Usually you would use variables.tf, main.tf, tfvars, and other files, but this is just basic example.
+
+```
+### Variables
+
+variable "defaults" {
+  default     = {
+    location = "eastus"
+    tags = { default_tag = "default level" }
+  }
+}
+
+variable "resource_groups" {
+  default     = [
+    {
+      name = "example-min-wus-rg"
+      location = "westus"
+    },
+    {
+      name = "example-min-eus-rg"
+      tags = { resource_tag = "resource level" }
+    }
+  ]
+}
+
+variable "required" {
+  default     = {
+    tags = { required_tag = "required level" }
+  }
+}
+
+### Resources/Modules
+
+module "resource-group" {
+  source  = "lupusllc/resource-group/azurerm"
+  version = "0.0.1"
+
+  defaults        = var.defaults
+  resource_groups = var.resource_groups
+  required        = var.required
+}
 ```
