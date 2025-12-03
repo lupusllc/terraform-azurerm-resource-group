@@ -1,10 +1,8 @@
-# Repo: terraform-azurerm-resource-group
-
-This is a [public repo](https://github.com/lupusllc/terraform-azurerm-resource-group), used as source for this public Terraform module.
+This [public repo](https://github.com/lupusllc/terraform-azurerm-resource-group) is used as source for this public Terraform module.
   
 ## Purpose
   
-These modules were created to expand provider capabilities and implement org standards & defaults. 
+This module was created to expand provider capabilities, implement org standards and defaults. 
   
 This helps shift complexity right (module side), while reducing complexity left (root/user side). So configuration is more easily defined at the vars/tfvars level.
   
@@ -12,11 +10,11 @@ This helps shift complexity right (module side), while reducing complexity left 
   
 * Uses a list of objects to create zero or more resources.
 * Uses a default map for common defaults, when not provided.
-  * Location.
-  * Resource Group.
-  * Tags.
+  * Location
+  * Resource Group
+  * Tags
 * Uses a required map for required items, that should be on all applicable resources.
-  * Tags.
+  * Tags
 * Handles dependencies checking at the module level.
 * Root/user level terraform is more simplified.
   
@@ -24,9 +22,7 @@ This helps shift complexity right (module side), while reducing complexity left 
   
 This module uses the azurerm provider.
   
-# Arguments Reference
-  
-### Arg: Root Level
+## Arguments: Root Level
   
 Arguments | Required | Type | Default | Example | Description
 --------- | -------- | ---- | ------- | ------- | -----------
@@ -34,7 +30,7 @@ defaults | no | map() | {} | [See Example](#arg-defaults-example) | Default item
 resource_groups | no | list(object()) | [] | [See Example](#arg-resource_groups-example) | A list of objects, used to create zero or more resource groups.
 required | no | map() | {} | [See Example](#arg-required-example) | Required items to use for resources for this and sub-modules, as applicable.
   
-### Arg: defaults
+## Arguments: defaults
   
 The defaults map uses the following for resources created, if those settings aren't provided.
   
@@ -43,7 +39,7 @@ Arguments | Required | Type | Default | Example | Description
 location | no | string | | [See Example](#arg-defaults-example) | Resource location.
 tags | no | map(string) | | [See Example](#arg-defaults-example) | Resource tags.
   
-#### Arg: defaults: Example
+### Arguments: defaults: Example
   
 ```
 {
@@ -52,7 +48,7 @@ tags | no | map(string) | | [See Example](#arg-defaults-example) | Resource tags
 }
 ```
   
-### Arg: resource_groups
+## Arguments: resource_groups
   
 The resource_groups list of objects defines the resource groups to be created.
   
@@ -64,7 +60,7 @@ tags | no | map(string) | | [See Example](#arg-resource_groups-example) | Resour
   
 \* These are only required if defaults do not provide these values.
   
-#### Arg: resource_groups: Example
+### Arguments: resource_groups: Example
   
 ```
 [
@@ -76,7 +72,7 @@ tags | no | map(string) | | [See Example](#arg-resource_groups-example) | Resour
 ]
 ```
   
-### Arg: required
+## Arguments: required
   
 The required map uses the following for all applicable resources created.
   
@@ -84,7 +80,7 @@ Arguments | Required | Type | Default | Example | Description
 --------- | -------- | ---- | ------- | ------- | -----------
 tags | no | map(string) | | [See Example](#arg-required-example) | Resource tags.
   
-#### Arg: required: Example
+### Arguments: required: Example
   
 ```
 {
@@ -92,9 +88,7 @@ tags | no | map(string) | | [See Example](#arg-required-example) | Resource tags
 }
 ```
   
-# Examples
-  
-## Example Usage - Minimal
+## Examples: Minimal
   
 The example below is a minimal example of to use this module.
   
@@ -120,7 +114,7 @@ module "resource-group" {
 }
 ```
   
-## Example Usage - Fuller
+## Examples: Fuller
   
 The example below is a fuller example of the use this module.
   
