@@ -1,4 +1,4 @@
-This [public repo](https://github.com/lupusllc/terraform-azurerm-resource-group) is used as source for this public Terraform module.
+This [public repo](https://github.com/lupusllc/terraform-azurerm-resource-group) is the source for this public Terraform module.
   
 ## Purpose
   
