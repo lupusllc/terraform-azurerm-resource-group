@@ -26,9 +26,9 @@ This module uses the azurerm provider.
   
 Arguments | Required | Type | Default | Example | Description
 --------- | -------- | ---- | ------- | ------- | -----------
-defaults | no | map() | {} | [See Example](#arg-defaults-example) | Default items to use for resources for this and sub-modules if those aren't provided.
-resource_groups | no | list(object()) | [] | [See Example](#arg-resource_groups-example) | A list of objects, used to create zero or more resource groups.
-required | no | map() | {} | [See Example](#arg-required-example) | Required items to use for resources for this and sub-modules, as applicable.
+defaults | no | map() | {} | [See Example](#arguments-defaults-example) | Default items to use for resources for this and sub-modules if those aren't provided.
+resource_groups | no | list(object()) | [] | [See Example](#arguments-resource_groups-example) | A list of objects, used to create zero or more resource groups.
+required | no | map() | {} | [See Example](#arguments-required-example) | Required items to use for resources for this and sub-modules, as applicable.
   
 ## Arguments: defaults
   
@@ -36,8 +36,8 @@ The defaults map uses the following for resources created, if those settings are
   
 Arguments | Required | Type | Default | Example | Description
 --------- | -------- | ---- | ------- | ------- | -----------
-location | no | string | | [See Example](#arg-defaults-example) | Resource location.
-tags | no | map(string) | | [See Example](#arg-defaults-example) | Resource tags.
+location | no | string | | [See Example](#arguments-defaults-example) | Resource location.
+tags | no | map(string) | | [See Example](#arguments-defaults-example) | Resource tags.
   
 ### Arguments: defaults: Example
   
@@ -54,9 +54,9 @@ The resource_groups list of objects defines the resource groups to be created.
   
 Arguments | Required | Type | Default | Example | Description
 --------- | -------- | ---- | ------- | ------- | -----------
-location | yes* | string | | [See Example](#arg-resource_groups-example) | Resource location.
-name | yes | string | | [See Example](#arg-resource_groups-example) | Resource name.
-tags | no | map(string) | | [See Example](#arg-resource_groups-example) | Resource tags, these tags will be combined with required tags if provided.
+location | yes* | string | | [See Example](#arguments-resource_groups-example) | Resource location.
+name | yes | string | | [See Example](#arguments-resource_groups-example) | Resource name.
+tags | no | map(string) | | [See Example](#arguments-resource_groups-example) | Resource tags, these tags will be combined with required tags if provided.
   
 \* These are only required if defaults do not provide these values.
   
@@ -78,7 +78,7 @@ The required map uses the following for all applicable resources created.
   
 Arguments | Required | Type | Default | Example | Description
 --------- | -------- | ---- | ------- | ------- | -----------
-tags | no | map(string) | | [See Example](#arg-required-example) | Resource tags.
+tags | no | map(string) | | [See Example](#arguments-required-example) | Resource tags.
   
 ### Arguments: required: Example
   
