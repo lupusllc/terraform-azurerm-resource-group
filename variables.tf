@@ -30,5 +30,10 @@ variable "resource_groups" {
     location = optional(string)
     name     = string
     tags     = optional(map(string), {})
+
+    ###### Role Assignments
+
+    # This allows role assignments to be assigned as part of this module, since scope is already known.
+    role_assignments = optional(any, [])
   }))
 }
