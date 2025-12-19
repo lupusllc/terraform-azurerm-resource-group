@@ -31,9 +31,12 @@ variable "resource_groups" {
     name     = string
     tags     = optional(map(string), {})
 
-    ###### Role Assignments
+    ###### Sub-resource & Additional Modules
+    # Since parent is known, these can be created here, which makes it easier for users.
+    # We don't specify the type here because the module itself will validate the structure. See the module variables for details for configuration.
+    #
+    # WARNING: Moving these resources to it's direct module will require recreation or state file manipulation.
 
-    # This allows role assignments to be assigned as part of this module, since scope is already known.
     role_assignments = optional(any, [])
   }))
 }

@@ -5,11 +5,7 @@ output "resource_groups" {
 
 output "resource_group_role_assignments" {
   description = "The resource group role assignments."
-  value = merge(
-    [
-      for name, results in module.lupus_az_role_assignment : results.role_assignments
-    ]... # Unpack the list of lists into a single list.
-  )
+  value       = module.lupus_az_role_assignment.role_assignments
 }
 
 ### Debug:

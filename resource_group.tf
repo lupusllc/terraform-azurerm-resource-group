@@ -14,6 +14,8 @@ terraform {
 
 ### Resources:
 
+###### Main
+
 resource "azurerm_resource_group" "this" {
   for_each = local.resource_groups
 
@@ -22,16 +24,14 @@ resource "azurerm_resource_group" "this" {
   tags     = each.value.tags
 }
 
-##### Role Assignments
+###### Sub-resource & Additional Modules
 
 module "lupus_az_role_assignment" {
+  depends_on = [azurerm_resource_group.this] # Ensures resource group exists before role assignments are created.
   source  = "lupusllc/role-assignment/azurerm" # https://registry.terraform.io/modules/lupusllc/storage-account/azurerm/latest
-  version = "0.0.1"
-  for_each = local.role_assignments
+  version = "0.0.2"
 
-  role_assignments = [for role in each.value : merge(role, {
-    scope = azurerm_resource_group.this[each.key].id
-    # Create a unique ID for each role assignment to avoid collisions, we can't use scope since it isn't known a new resource.
-    unique_for_each_id = format("%s>%s>%s", each.key, role.principal_id, coalesce(try(role.role_definition_name, null), try(role.role_definition_id, null)))
-  })]
+  ### Basic
+
+  role_assignments = local.role_assignments
 }
